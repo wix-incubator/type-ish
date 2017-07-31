@@ -1,0 +1,52 @@
+{
+  "name": "type-ish",
+  "version": "2.0.0",
+  "description": "JavaScript Runtime Contract Validations",
+  "license": "MIT",
+  "nativePackage": true,
+  "author": "Daniel Zlotin <zlotindaniel@gmail.com>",
+  "contributors": [
+    "Tal Kol <talkol@gmail.com>"
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "bugs": {
+    "url": "https://github.com/wix/type-ish/issues"
+  },
+  "homepage": "https://github.com/wix/type-ish",
+  "readme": "https://github.com/wix/type-ish#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wix/type-ish.git"
+  },
+  "main": "src/index.js",
+  "scripts": {
+    "clean": ":",
+    "build": ":",
+    "test": "jest --coverage",
+    "release": ":"
+  },
+  "dependencies": {
+    "lodash": "4.x.x"
+  },
+  "devDependencies": {
+    "jest": "20.x.x"
+  },
+  "jest": {
+    "roots": [
+      "<rootDir>/node_modules/",
+      "<rootDir>/src/"
+    ],
+    "resetMocks": true,
+    "resetModules": true,
+    "coverageThreshold": {
+      "global": {
+        "branches": 100,
+        "functions": 100,
+        "lines": 100,
+        "statements": 100
+      }
+    }
+  }
+}

@@ -1,5 +1,13 @@
-dist
-.vscode/
+scripts/
+.travis.yml
+wallaby.js
+
+
+#################
+# from .gitignore:
+################
+
+
 
 ############
 # Node
@@ -147,6 +155,7 @@ android/out/
 # Gradle files
 android/.gradle/
 android/build/
+android/app/build/
 
 # Local configuration file (sdk path, etc)
 local.properties

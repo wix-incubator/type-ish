@@ -1,2 +1,2 @@
 # type-ish
-javascript runtime contract validations
+JavaScript Runtime Contract Validations
