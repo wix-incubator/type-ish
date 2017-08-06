@@ -1,5 +1,24 @@
 const _ = require('lodash');
 
+class TypeValidator {
+  constructor({ params, validateFn }) {
+    this.validateFn = validateFn;
+    this.validate = this.validate.bind(this);
+    this.params = params;
+  }
+
+  validate(instance) {
+    this.validateFn(instance, ...this.params);
+  }
+
+  extend(extendingValidateFn) {
+    return Type((...p) => {
+      this.validateFn(...p);
+      extendingValidateFn(...p);
+    });
+  }
+}
+
 function Type(validateFn) {
   return (...params) => new TypeValidator({ params, validateFn });
 }
@@ -84,23 +103,3 @@ module.exports = {
   EnumType,
   Optional
 };
-
-class TypeValidator {
-  constructor({ params, validateFn }) {
-    this.validateFn = validateFn;
-    this.validate = this.validate.bind(this);
-    this.params = params;
-  }
-
-  validate(instance) {
-    this.validateFn(instance, ...this.params);
-  }
-
-  extend(extendingValidateFn) {
-    return Type((...p) => {
-      this.validateFn(...p);
-      extendingValidateFn(...p);
-    });
-  }
-}
-

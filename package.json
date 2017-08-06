@@ -24,13 +24,15 @@
   "scripts": {
     "clean": ":",
     "build": ":",
-    "test": "jest --coverage",
-    "release": ":"
+    "test": "xo && jest --coverage",
+    "prerelease": "npm run test",
+    "release": "npm version patch && git push && npm publish"
   },
   "dependencies": {
     "lodash": "4.x.x"
   },
   "devDependencies": {
+    "xo": "0.18.x",
     "jest": "20.x.x"
   },
   "jest": {
@@ -47,6 +49,25 @@
         "lines": 100,
         "statements": 100
       }
+    }
+  },
+  "xo": {
+    "space": true,
+    "env": [
+      "node",
+      "jest"
+    ],
+    "rules": {
+      "new-cap": 0,
+      "unicorn/filename-case": 0,
+      "arrow-parens": [
+        2,
+        "always"
+      ],
+      "object-curly-spacing": [
+        2,
+        "always"
+      ]
     }
   }
 }

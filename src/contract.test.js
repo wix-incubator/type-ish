@@ -2,7 +2,6 @@ const _ = require('lodash');
 const { Type, StringType, NumberType, BooleanType, ArrayType, MapType, Optional, EnumType } = require('./contract');
 
 describe('contract tests', () => {
-
   it('StringType', () => {
     expect(() => StringType().validate('hello')).not.toThrow();
     expect(() => StringType().validate('')).not.toThrow();
@@ -34,7 +33,7 @@ describe('contract tests', () => {
   it('custom type: MinMaxNumberType', () => {
     const MinMaxNumberType = Type((instance, min, max) => {
       if (!_.isNumber(instance)) {
-        throw new Error(`expected ${instance} to be a NumberType`);
+        throw new TypeError(`expected ${instance} to be a NumberType`);
       }
       if (instance < min || instance > max) {
         throw new Error(`${instance} out of range`);
