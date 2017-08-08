@@ -55,6 +55,17 @@ const ArrayType = Type((instance, valueType) => {
   });
 });
 
+const OpenMapType = Type((instance, scheme) => {
+  assert(
+    _.isPlainObject(instance),
+    `expected ${instance} to be a OpenMapType`
+  );
+
+  _.forEach(scheme, (valueType, key) => {
+    valueType.validate(instance[key]);
+  });
+});
+
 const MapType = Type((instance, scheme) => {
   assert(
     _.isPlainObject(instance),
@@ -80,6 +91,56 @@ const Optional = Type((instance, valueType) => {
   }
 });
 
+const Not = Type((instance, valueType) => {
+  try {
+    valueType.validate(instance);
+  } catch (err) {
+    return;
+  }
+  throw new Error(`expected ${instance} not to be valueType`);
+});
+
+const OneOf = Type((instance, valueTypes) => {
+  let matches = 0;
+  let theError = new Error(`expected ${instance} to match exactly once`);
+
+  _.forEach(valueTypes, (t) => {
+    try {
+      t.validate(instance);
+      matches++;
+    } catch (err) {
+      theError = err;
+    }
+  });
+
+  if (matches !== 1) {
+    throw theError;
+  }
+});
+
+const AllOf = Type((instance, valueTypes) => {
+  _.forEach(valueTypes, (t) => {
+    t.validate(instance);
+  });
+});
+
+const AnyOf = Type((instance, valueTypes) => {
+  let theError;
+  const matches = _.find(valueTypes, (t) => {
+    try {
+      t.validate(instance);
+      return true;
+    } catch (err) {
+      theError = err;
+      return false;
+    }
+  });
+
+  if (!matches) {
+    throw theError;
+  }
+});
+
 const EnumType = Type((instance, ...enums) => {
   assert(
     _.includes(enums, instance),
@@ -100,6 +161,11 @@ module.exports = {
   BooleanType,
   ArrayType,
   MapType,
+  OpenMapType,
   EnumType,
-  Optional
+  Optional,
+  Not,
+  OneOf,
+  AllOf,
+  AnyOf
 };

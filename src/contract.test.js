@@ -1,5 +1,19 @@
 const _ = require('lodash');
-const { Type, StringType, NumberType, BooleanType, ArrayType, MapType, Optional, EnumType } = require('./contract');
+const {
+  Type,
+  StringType,
+  NumberType,
+  BooleanType,
+  ArrayType,
+  MapType,
+  OpenMapType,
+  Optional,
+  EnumType,
+  Not,
+  OneOf,
+  AllOf,
+  AnyOf
+} = require('./contract');
 
 describe('contract tests', () => {
   it('StringType', () => {
@@ -119,6 +133,65 @@ describe('contract tests', () => {
     expect(() => EnumType(1, 3).validate(2)).toThrow('expected one of 1,3');
     expect(() => EnumType(1, 3).validate(3)).not.toThrow();
     expect(() => EnumType(1, 3).validate('1')).toThrow('expected one of 1,3');
+  });
+
+  it('OpenMapType', () => {
+    const contract = OpenMapType({
+      name: StringType()
+    });
+    expect(() => contract.validate({ name: 'bob' })).not.toThrow();
+    expect(() => contract.validate({ name: 123 })).toThrow();
+    expect(() => contract.validate(123)).toThrow();
+    expect(() => contract.validate({ name: 'bob', age: 30 })).not.toThrow();
+  });
+
+  it('Not operator', () => {
+    const contract = Not(StringType());
+    expect(() => contract.validate()).not.toThrow();
+    expect(() => contract.validate(123)).not.toThrow();
+    expect(() => contract.validate('hello')).toThrow('expected hello not to be valueType');
+  });
+
+  it('OneOf operator', () => {
+    const contract = OneOf([StringType(), BooleanType()]);
+    expect(() => contract.validate()).toThrow();
+    expect(() => contract.validate(123)).toThrow();
+    expect(() => contract.validate('123')).not.toThrow();
+    expect(() => contract.validate(true)).not.toThrow();
+    expect(() => contract.validate({})).toThrow();
+  });
+
+  it('OneOf is exactly one', () => {
+    const contract = OneOf([NumberType(), NumberType()]);
+    expect(() => contract.validate()).toThrow();
+    expect(() => contract.validate(123)).toThrow();
+  });
+
+  it('AllOf operator', () => {
+    const MinLengthType = Type((instance, length) => {
+      if (instance.length < length) {
+        throw new Error();
+      }
+    });
+    const contract = AllOf([StringType(), MinLengthType(5)]);
+    expect(() => contract.validate()).toThrow();
+    expect(() => contract.validate([1, 2, 3])).toThrow();
+    expect(() => contract.validate('123')).toThrow();
+    expect(() => contract.validate('123456')).not.toThrow();
+  });
+
+  it('AnyOf operator', () => {
+    const MinLengthType = Type((instance, length) => {
+      if (instance.length < length) {
+        throw new Error();
+      }
+    });
+    const contract = AnyOf([StringType(), MinLengthType(5)]);
+    expect(() => contract.validate()).toThrow();
+    expect(() => contract.validate('123')).not.toThrow();
+    expect(() => contract.validate('1234567')).not.toThrow();
+    expect(() => contract.validate([1, 2, 3, 4, 5, 6, 7])).not.toThrow();
+    expect(() => contract.validate([1, 2, 3])).toThrow();
   });
 });
 
