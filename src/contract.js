@@ -166,6 +166,17 @@ const EnumType = Type((instance, ...enums) => {
   );
 });
 
+const RegexStringType = Type((instance, regex) => {
+  assert(
+    _.isString(instance),
+    `expected ${instance} to be a StringType`
+  );
+  assert(
+    new RegExp(regex).test(instance),
+    `expected ${instance} to match ${regex}`
+  );
+});
+
 function assert(what, msg) {
   if (!what) {
     throw new Error(msg);
@@ -186,5 +197,6 @@ module.exports = {
   Not,
   OneOf,
   AllOf,
-  AnyOf
+  AnyOf,
+  RegexStringType
 };

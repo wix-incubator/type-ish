@@ -13,7 +13,8 @@ const {
   OneOf,
   AllOf,
   AnyOf,
-  ContainingMapType
+  ContainingMapType,
+  RegexStringType
 } = require('./contract');
 
 describe('contract tests', () => {
@@ -205,6 +206,15 @@ describe('contract tests', () => {
     expect(() => contract.validate({ someKey: { name: 'bob' }, otherKey: { name: 456 } })).toThrow();
     expect(() => contract.validate({ name: 'bob' })).toThrow();
     expect(() => contract.validate({})).toThrow();
+  });
+
+  it('RegexStringType', () => {
+    const contract = RegexStringType('^abc.*xyz$');
+    expect(() => contract.validate('')).toThrow();
+    expect(() => contract.validate('abcxy')).toThrow();
+    expect(() => contract.validate('abcxyz')).not.toThrow();
+    expect(() => contract.validate('  abcxyz')).toThrow();
+    expect(() => contract.validate('abc123 =- 123123 xyz')).not.toThrow();
   });
 });
 
