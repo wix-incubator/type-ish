@@ -12,7 +12,8 @@ const {
   Not,
   OneOf,
   AllOf,
-  AnyOf
+  AnyOf,
+  ContainingMapType
 } = require('./contract');
 
 describe('contract tests', () => {
@@ -192,6 +193,18 @@ describe('contract tests', () => {
     expect(() => contract.validate('1234567')).not.toThrow();
     expect(() => contract.validate([1, 2, 3, 4, 5, 6, 7])).not.toThrow();
     expect(() => contract.validate([1, 2, 3])).toThrow();
+  });
+
+  it('AllKeysMapType', () => {
+    const contract = ContainingMapType({
+      name: StringType()
+    });
+    expect(() => contract.validate({ someKey: { name: 'bob' } })).not.toThrow();
+    expect(() => contract.validate({ someKey: { name: 'bob' }, otherKey: { name: 'goos' } })).not.toThrow();
+    expect(() => contract.validate({ someKey: { name: 123 } })).toThrow();
+    expect(() => contract.validate({ someKey: { name: 'bob' }, otherKey: { name: 456 } })).toThrow();
+    expect(() => contract.validate({ name: 'bob' })).toThrow();
+    expect(() => contract.validate({})).toThrow();
   });
 });
 

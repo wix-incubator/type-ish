@@ -85,6 +85,24 @@ const MapType = Type((instance, scheme) => {
   );
 });
 
+const ContainingMapType = Type((instance, scheme) => {
+  assert(
+    _.isPlainObject(instance),
+    `expected ${instance} to be a MapType`
+  );
+
+  assert(
+    _.size(instance),
+    `expected ${instance} to contain all keys matching the schema`
+  );
+
+  _.forEach(scheme, (valueType, key) => {
+    _.forEach(instance, (outerValue) => {
+      valueType.validate(outerValue[key]);
+    });
+  });
+});
+
 const Optional = Type((instance, valueType) => {
   if (!_.isUndefined(instance)) {
     valueType.validate(instance);
@@ -162,6 +180,7 @@ module.exports = {
   ArrayType,
   MapType,
   OpenMapType,
+  ContainingMapType,
   EnumType,
   Optional,
   Not,
