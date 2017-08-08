@@ -1,6 +1,6 @@
 {
   "name": "type-ish",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "JavaScript Runtime Contract Validations",
   "license": "MIT",
   "nativePackage": true,
